@@ -2,6 +2,7 @@ from gpiozero import LED, PWMLED
 from time import sleep
 
 # PINS
+# Stepper Motor controlled with driver
 dir1 = LED(13)
 step1 = PWMLED(19, frequency=800)
 en1 = LED(16)
@@ -19,6 +20,7 @@ def move_down():
 def stop():
     step1.off()
     print("Stopped")
+
 
 while True:
     move_up()

@@ -2,6 +2,7 @@ from gpiozero import PWMLED, LED
 from time import sleep
 
 # PINS
+# DC Motor controlled with driver
 dc_dir = LED(6)
 dc_pwm = PWMLED(12, frequency=1000)
 
