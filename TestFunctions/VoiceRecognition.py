@@ -12,7 +12,7 @@ mic = sr.Microphone(2)
 r = sr.Recognizer()
 
 spellLists = {
-    "move up": ["move up", "moving up", "go up", "going up"],
+    "move up": ["move up", "moving up", "go up", "going up", "move app", "moving app"],
     "move down": ["move down", "move doll", "moving down", "moving doll", "go down", "going down", "go doll", "going doll", "mcdowell"],
     "start drilling": ["start", "start drilling", "start drooling", "drooling", "drilling", "dooling", "drill", "dealing", "start dealing", "spot juuling", "start tingling", "spiderling", "bad drooling", "juuling", "spot drilling", "bad ruling", "start giggling", "todd dewey", "sparkling", "spot"],
     "stop drilling": ["stop juuling", "stop giggling", "stop vierling", "stop their drill", "stop dead through", "stop drooling", "stop drilling", "stop the drill", "stop the deal", "stop dealing", "set up dealing", "stop doing"],
