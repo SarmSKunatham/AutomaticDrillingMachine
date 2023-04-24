@@ -8,6 +8,8 @@ def speechSynthesis(audio):
 
 audioDir = os.getcwd() + "/Audios/"
 audioFiles = os.listdir("Audios")
+audioFiles.sort()
+print(audioFiles)
 
 while True:
     try:
