@@ -3,10 +3,9 @@ from time import sleep
 import threading
 import os
 import warnings
-import playsound as ps
 import speech_recognition as sr
 import time
-from TestFunctions.SpeechSynthesisFunction import speechSynthesis, audioFiles, audioDir
+from TestFunctions.playwavfile import playWavFile, audioFiles, audioDir
 import os
 from threading import Thread
 warnings.filterwarnings("ignore")
@@ -45,32 +44,29 @@ def move_up():
     step1.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
     dir1.off()
     print("Moving up")
-    speak("Audios/1. Moving up.wav")
+    playWavFile("Audios/1. Moving up.wav")
 
 def move_down():
     step1.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
     dir1.on()
     print("Moving down")
-    speak("Audios/2. Moving down.wav")
+    playWavFile("Audios/2. Moving down.wav")
 
 def stop_moving():
     step1.off()
     print("Stopped Moving")
-    speak("Audios/3. Stopped.wav")
+    playWavFile("Audios/3. Stopped.wav")
 
 def drill():
     dc_pwm.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
     dc_dir.off()
     print("Drilling")
-    speak("Audios/4. Start Drilling.wav")
+    playWavFile("Audios/4. Start Drilling.wav")
 
 def stop_drilling():
     dc_pwm.off()
     print("Stopped Drilling")
-    speak("Audios/7. Stop Drilling.wav")
-
-def speak(audio):
-    ps.playsound(audio)
+    playWavFile("Audios/7. Stop Drilling.wav")
 
 def red_on():
     red.on()
@@ -132,16 +128,16 @@ def speech_recognition():
             else:
                 print('Please give a right command.')
                 speechFile = os.path.join(audioDir, audioFiles[4])
-                speechSynthesis(speechFile)
+                playWavFile(speechFile)
                 text = ""
                 continue
         except:
             print('Sorry could not recogonize your voice.')
             speechFile = os.path.join(audioDir, audioFiles[4])
-            speechSynthesis(speechFile)
+            playWavFile(speechFile)
             text = ""
             continue
-        speechSynthesis(speechFile)
+        playWavFile(speechFile)
         text = ""
 
 # Main Thread
@@ -205,7 +201,7 @@ spellLists = {
     "stop": ["stop", "stop moving", "stop movie"],
 }
 speechFile = os.path.join(audioDir, audioFiles[5])
-speechSynthesis(speechFile)
+playWavFile(speechFile)
 green_on()
 text = ""
 print("Setup complete!!!")

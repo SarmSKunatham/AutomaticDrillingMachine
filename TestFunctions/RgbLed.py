@@ -1,5 +1,7 @@
 from gpiozero import LED
 from time import sleep
+import warnings
+warnings.filterwarnings('ignore')
 
 # PINS
 red = LED(18)
@@ -12,19 +14,19 @@ blue.off()
 # Blink red, green, blue respectively
 while True:
     # RED
-    red.on()
-    green.off()
-    blue.off()
-    sleep(0.5)
-    # GREEN
     red.off()
     green.on()
-    blue.off()
-    sleep(0.5)
-    # BLUE
-    red.off()
+    blue.on()
+    sleep(1)
+    # GREEN
+    red.on()
     green.off()
     blue.on()
-    sleep(0.5)
+    sleep(1)
+    # BLUE
+    red.on()
+    green.on()
+    blue.off()
+    sleep(1)
 
 

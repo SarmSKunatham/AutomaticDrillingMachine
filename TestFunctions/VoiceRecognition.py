@@ -1,7 +1,9 @@
 import speech_recognition as sr
 import time
-from SpeechSynthesisFunction import speechSynthesis, audioFiles, audioDir
+from playwavfile import playWavFile, audioFiles, audioDir
 import os
+import warnings
+warnings.filterwarnings('ignore')
 
 # To check the microphone index
 # for index, name in enumerate(sr.Microphone.list_microphone_names()):
@@ -19,9 +21,10 @@ spellLists = {
     "stop": ["stop", "stop moving", "stop movie"],
 }
 speechFile = os.path.join(audioDir, audioFiles[5])
-speechSynthesis(speechFile)
+playWavFile(speechFile)
 while True:
     with mic as source:
+        r.adjust_for_ambient_noise(source)
         print('Command should be move up/ move down/ start drilling/ stop drilling.')
         print('Tell your command: ')
         audio = r.listen(source)
@@ -62,11 +65,11 @@ while True:
         else:
             print('Please give a right command.')
             speechFile = os.path.join(audioDir, audioFiles[4])
-            speechSynthesis(speechFile)
+            playWavFile(speechFile)
             continue
     except:
         print('Sorry could not recogonize your voice.')
         speechFile = os.path.join(audioDir, audioFiles[4])
-        speechSynthesis(speechFile)
+        playWavFile(speechFile)
         continue
-    speechSynthesis(speechFile)
+    playWavFile(speechFile)

@@ -1,10 +1,10 @@
 # Test synthesis sound from .wav file
-import playsound as ps
+import playwavfile as pwf
 import os
 
 def speechSynthesis(audio):
     print(audio)
-    ps.playsound(audio)
+    pwf(audio)
 
 audioDir = os.getcwd() + "/Audios/"
 audioFiles = os.listdir("Audios")
