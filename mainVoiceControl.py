@@ -12,9 +12,12 @@ warnings.filterwarnings("ignore")
 
 # =====Define the pins=====
 # RGB LED
-red = LED(18)
+red = LED(15)
 green = LED(17)
-blue = LED(15)
+blue = LED(18)
+red.on()
+green.on()
+blue.on()
 
 # Button 1: up
 # Button 2: down
@@ -30,24 +33,26 @@ lmsw1 = Button(5)
 lmsw2 = Button(7)
 
 # DC Motor controlled with driver
-dc_dir = LED(6)
-dc_pwm = PWMLED(12, frequency=1000)
+dc_dir = LED(12)
+dc_pwm = PWMLED(6, frequency=1000)
 
 # Stepper Motor controlled with driver
 dir1 = LED(13)
-step1 = PWMLED(19, frequency=800)
+step1 = PWMLED(19, frequency=1000)
 en1 = LED(16)
 # =====Define the pins=====
 
 # =====Define the functions=====
 def move_up():
-    step1.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
+    # step1.blink(on_time=0.01, off_time=0, fade_in_time=0, fade_out_time=0, n=None, background=True)
+    step1.pulse(fade_in_time=5, fade_out_time=0.001, n=None, background=True)
     dir1.off()
     print("Moving up")
     playWavFile("Audios/1. Moving up.wav")
 
 def move_down():
-    step1.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
+    # step1.blink(on_time=0.01, off_time=0, fade_in_time=0, fade_out_time=0, n=None, background=True)
+    step1.pulse(fade_in_time=5, fade_out_time=0.001, n=None, background=True)
     dir1.on()
     print("Moving down")
     playWavFile("Audios/2. Moving down.wav")
@@ -58,8 +63,9 @@ def stop_moving():
     playWavFile("Audios/3. Stopped.wav")
 
 def drill():
-    dc_pwm.blink(on_time=0.001, off_time=0.001, fade_in_time=0, fade_out_time=0, n=None, background=True)
-    dc_dir.off()
+    dc_pwm.blink(on_time=10, off_time=0, fade_in_time=0, fade_out_time=0, n=None, background=True)
+    # dc_pwm.pulse(fade_in_time=10, fade_out_time=10, n=None, background=True)
+    dc_dir.on()
     print("Drilling")
     playWavFile("Audios/4. Start Drilling.wav")
 
@@ -69,25 +75,26 @@ def stop_drilling():
     playWavFile("Audios/7. Stop Drilling.wav")
 
 def red_on():
-    red.on()
-    green.off()
-    blue.off()
-
-def green_on():
     red.off()
     green.on()
-    blue.off()
+    blue.on()
 
-def blue_on():
-    red.off()
+def green_on():
+    red.on()
     green.off()
     blue.on()
+
+def blue_on():
+    red.on()
+    green.on()
+    blue.off()
 
 # Thread for speech recognition
 def speech_recognition():
     global text
     while True:
         with mic as source:
+            r.adjust_for_ambient_noise(source)
             print('Command should be move up/ move down/ start drilling/ stop drilling.')
             print('Tell your command: ')
             audio = r.listen(source)
@@ -142,48 +149,63 @@ def speech_recognition():
 
 # Main Thread
 def main():
+    # global text
+    counter = 0
+    counterDrill = 0
+    prevDrill = 0
+    prev = 0
     while True:
-        # Move up
-        if button1.is_pressed or str(text) in spellLists["move up"]:
+          # Controll the up down
+        if not button3.is_pressed:
+            counter += 1
+    #     # Move up
+        if (counter == 1 and prev != counter) or (str(text) in spellLists["move up"]):
             move_up()
             red_on()
-        # Move down
-        if button2.is_pressed or str(text) in spellLists["move down"]:
+            prev = counter
+    #     # Move down
+        if (counter == 2 and prev != counter) or (str(text) in spellLists["move down"]):
             move_down()
             red_on()
+            counter = 0
+            prev = counter
         
-        # Top limit switch
-        if lmsw1.is_pressed:
-            print("LmSwitch 1 is pressed!")
-            stop_moving()
-            green_on()
-        # Bottom limit switch
-        if lmsw2.is_pressed:
-            print("LmSwitch 2 is pressed!")
-            stop_moving()
-            green_on()
+    #     # # Top limit switch
+    #     # if lmsw1.is_pressed:
+    #     #     print("LmSwitch 1 is pressed!")
+    #     #     stop_moving()
+    #     #     green_on()
+    #     # # Bottom limit switch
+    #     # if lmsw2.is_pressed:
+    #     #     print("LmSwitch 2 is pressed!")
+    #     #     stop_moving()
+    #     #     green_on()
 
-        # Controll the drill
-        if button3.is_pressed:
-            counter += 1
-        # Start drilling
-        if counter == 1 or str(text) in spellLists["start drilling"]:
+    #   
+    #     # Start drilling
+        if not button1.is_pressed:
+            counterDrill += 1
+        if (counterDrill == 1 and prevDrill != counterDrill) or str(text) in spellLists["start drilling"]:
             drill()
             blue_on()
-        if counter == 2 or str(text) in spellLists["stop drilling"]:
+            prevDrill = counterDrill
+            
+        # Stop drilling   
+        if (counterDrill == 2 and prevDrill != counterDrill) or str(text) in spellLists["stop drilling"]:
             stop_drilling()
-            counter = 0
             green_on()
+            counterDrill = 0
+            prevDrill = counterDrill
+            
         
-        # Stop moving
-        if str(text) in spellLists["stop"]:
+    #     # Stop moving
+        if not button2.is_pressed or str(text) in spellLists["stop"]:
             stop_moving()
             green_on()
-        else:
-            stop_moving()
-            green_on()
+        # else:
+        #     stop_moving()
+        #     green_on()
 
-        sleep(0.1)
 
 # =====Define the functions=====
 
@@ -193,12 +215,13 @@ mic = sr.Microphone(2)
 # Recognizer
 r = sr.Recognizer()
 
+
 spellLists = {
-    "move up": ["move up", "moving up", "go up", "going up", "move app", "moving app"],
-    "move down": ["move down", "move doll", "moving down", "moving doll", "go down", "going down", "go doll", "going doll", "mcdowell"],
-    "start drilling": ["start", "start drilling", "start drooling", "drooling", "drilling", "dooling", "drill", "dealing", "start dealing", "spot juuling", "start tingling", "spiderling", "bad drooling", "juuling", "spot drilling", "bad ruling", "start giggling", "todd dewey", "sparkling", "spot"],
-    "stop drilling": ["stop juuling", "stop giggling", "stop vierling", "stop their drill", "stop dead through", "stop drooling", "stop drilling", "stop the drill", "stop the deal", "stop dealing", "set up dealing", "stop doing"],
-    "stop": ["stop", "stop moving", "stop movie"],
+    "move up": ["move up","couldn't", "moving up", 'coon', "go up", "going up", "move app", "moving app"],
+    "move down": ["move down", "move doll", 'long', "moving down", "moving doll", "go down", "going down", "go doll", "going doll", "mcdowell"],
+    "start drilling": ["start", 'moon', "start drilling", "start drooling", "drooling", 'start doin', 'start doing', "drilling", "dooling", "drill", "dealing", "start dealing", "spot juuling", "start tingling", "spiderling", "bad drooling", "juuling", "spot drilling", "bad ruling", "start giggling", "todd dewey", "sparkling", "spot"],
+    "stop drilling": ["stop juuling", "stop giggling", 'stop doing', 'stop doin', "stop vierling", 'stop dueling', "stop their drill", "stop dead through", "stop drooling", "stop drilling", "stop the drill", "stop the deal", "stop dealing", "set up dealing", "stop doing"],
+    "stop": ["stop", "stop moving", "stop movie", 'use', 'paul'],
 }
 speechFile = os.path.join(audioDir, audioFiles[5])
 playWavFile(speechFile)
@@ -213,6 +236,7 @@ if __name__ == "__main__":
     # Thread for speech recognition
     t1 = threading.Thread(target=speech_recognition)
     t1.start()
-    main()
+    t2 = threading.Thread(target=main)
+    t2.start()
 
 

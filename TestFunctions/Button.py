@@ -10,11 +10,11 @@ button2 = Button(11)
 button3 = Button(25)
 counter = 0
 while True:
-    if button1.is_pressed:
+    if not button1.is_pressed:
         print("Move up!")
-    if button2.is_pressed:
+    if not button2.is_pressed:
         print("Move down!")
-    if button3.is_pressed:
+    if not button3.is_pressed:
         counter += 1
     if counter == 1:
         print("Drill!")

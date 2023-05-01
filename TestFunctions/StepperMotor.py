@@ -4,7 +4,7 @@ from time import sleep
 # PINS
 # Stepper Motor controlled with driver
 dir1 = LED(13)
-step1 = PWMLED(19, frequency=800)
+step1 = PWMLED(19, frequency=5000)
 en1 = LED(16)
 
 def move_up():

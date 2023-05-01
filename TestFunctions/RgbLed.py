@@ -4,9 +4,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # PINS
-red = LED(18)
+red = LED(15)
 green = LED(17)
-blue = LED(15)
+blue = LED(18)
 red.off()
 green.off()
 blue.off()
